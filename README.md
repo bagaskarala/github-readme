@@ -2,6 +2,10 @@
 
 DEMO : http://github-readme.surge.sh/
 
+## Description
+- Fetch github user readme
+- Sorting roman names
+
 ## Project setup
 ```
 npm install
