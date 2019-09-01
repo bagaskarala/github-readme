@@ -21,6 +21,7 @@ export default new Router({
       component: Roman
     },
     {
+      // using children in route for dynamic route
       path: '/:username',
       component: {
         render(c) {

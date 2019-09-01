@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>Sorting Roman Name</h2>
+    <div class="small alert alert-info">Max 50 names, every names max 20 characters, Using format 'Single_String Roman_Number'</div>
     <form>
       <div class="form-group">
         <textarea
@@ -12,17 +13,13 @@
           rows="3"
         ></textarea>
       </div>
-      <h5
-        v-show="!validation.isArray"
+      <p
+        v-show="!validation"
         style="color:red"
-      >Provide CSV format</h5>
-      <h5
-        v-show="!validation.maxLength"
-        style="color:red"
-      >Array between 1-50</h5>
+      >Invalid Input</p>
       <button
         class="btn btn-success btn-block"
-        @click.prevent="sort(romanNames)"
+        @click.prevent="sanitize(romanNames)"
       >Sort Roman Name</button>
     </form>
     <hr class="my-3">
@@ -50,19 +47,13 @@ export default {
   data() {
     return {
       romanNames: 'Louis IX,Louis VIII, David I',
-      validation: {
-        isArray: true,
-        maxLength: true
-      },
+      validation: true,
       result: null
     }
   },
   methods: {
+    // convert roman to number
     romanToNum(roman) {
-      if (roman === undefined) {
-        this.validation.isArray = false;
-        return false
-      }
       if (roman === "") return 0;
       if (roman.startsWith("L")) return 50 + this.romanToNum(roman.substr(1));
       if (roman.startsWith("XL")) return 40 + this.romanToNum(roman.substr(2));
@@ -75,26 +66,54 @@ export default {
     },
 
     sort(romanNames) {
-      romanNames = romanNames.split(',').map(function (item) {
-        return item.trim();
-      });
-      console.log(romanNames);
-      console.log(Array.isArray(romanNames));
-      this.validation.isArray = true
-      this.validation.maxLength = true
+      // sorting roman name using number
+      var collator = new Intl.Collator('num', { numeric: true, sensitivity: 'base' });
+      this.result = romanNames
+        // create num key for sorting purpose
+        .map((n) => ({ name: n, num: n.split(" ")[0] + this.romanToNum(n.split(" ")[1]) }))
+        // sorting usiong collator
+        .sort((a, b) => collator.compare(a.num, b.num))
+        // show name only
+        .map(({ name }) => name)
+    },
+
+    sanitize(romanNames) {
+      // reset validation and result
+      this.reset()
+      // split CSV input, then check validations
+      romanNames = romanNames
+        .split(',')
+        .map(function (item) {
+          return item.trim().toUpperCase();
+        })
+        .map(function (item) {
+          // check character length every name
+          if (item.length < 1 || item.length > 20) { return false }
+          // check format every name
+          if (item.split(" ").length != 2) { return false }
+          return item
+        });
+      if (romanNames.includes(false)) {
+        //if validation fail, show error
+        this.validation = false
+        return false
+      }
       if (Array.isArray(romanNames) == false) {
-        // this.validation.isArray = false
+        // check if input is array
+        this.validation = false
       }
-      else if (romanNames.length > 50) {
-        this.validation.maxLength = false
+      if (romanNames.length > 50) {
+        // check all names length
+        this.validation = false
+        return false
       }
-      else {
-        var collator = new Intl.Collator('num', { numeric: true, sensitivity: 'base' });
-        this.result = romanNames
-          .map((n) => ({ name: n, num: n.split(" ")[0] + this.romanToNum(n.split(" ")[1]) }))
-          .sort((a, b) => collator.compare(a.num, b.num))
-          .map(({ name }) => name)
-      }
+      this.sort(romanNames)
+    },
+
+    reset() {
+      // reset validation and result
+      this.validation = true
+      this.result = null
     }
   },
 }

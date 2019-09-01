@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- header  -->
     <div class="d-flex justify-content-between align-items-center">
       <h3 class="mb-3">List of {{username}} Repository <span class="badge badge-primary">{{total}}</span></h3>
 
@@ -11,16 +12,18 @@
       >
     </div>
     <div class="clearfix"></div>
+    <!-- error show when there is errorMessage -->
     <div
       v-if="errorMessage"
       class="alert alert-warning"
     >{{errorMessage}}</div>
+    <!-- if no error then show result  -->
     <template v-else>
+      <!-- show loading -->
       <div
         v-if="isBusy"
         class="d-flex justify-content-center"
       >
-
         <div
           class="spinner-border my-5"
           role="status"
@@ -28,6 +31,7 @@
           <span class="sr-only">Loading...</span>
         </div>
       </div>
+      <!-- show template for result  -->
       <template v-else>
         <div v-if="userRepos.length==0">
           <div class="alert alert-primary">No data. <br>
@@ -39,6 +43,7 @@
             </router-link>
           </div>
         </div>
+        <!-- container using bootstrap card  -->
         <div
           v-for="repo in userRepos"
           :key="repo.id"
@@ -83,8 +88,10 @@ export default {
   methods: {
     async getUserRepos() {
       this.isBusy = true
+      // clear previous data
       this.clearResult()
       try {
+        // fetch API using service in ApiService.js
         const getUserRepos = await Axios.getUserRepos(this.username);
         this.userRepos = getUserRepos.data;
         this.total = this.userRepos.length;
@@ -98,10 +105,6 @@ export default {
       this.userRepos = []
       this.total = 0
       this.errorMessage = null
-    },
-    reset() {
-      this.clear()
-      this.username = null
     }
   },
   created() {

@@ -49,6 +49,7 @@ export default {
     }
   },
   methods: {
+    // go to user page
     async goToUser() {
       this.$router.push({ path: `/${this.username}` })
     },
@@ -57,6 +58,7 @@ export default {
     }
   },
   mounted() {
+    // autofocus to input
     this.$refs.username.focus();
   },
 }

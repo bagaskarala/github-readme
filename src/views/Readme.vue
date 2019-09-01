@@ -8,7 +8,6 @@
           v-if="isBusy"
           class="d-flex justify-content-center"
         >
-
           <div
             class="spinner-border my-5"
             role="status"
@@ -37,6 +36,7 @@ export default {
     }
   },
   computed: {
+    // get username and project from url
     username() {
       return this.$route.params.username
     },
@@ -48,6 +48,8 @@ export default {
     async getProjectReadme() {
       this.isBusy = true
       try {
+        // fetch API using service in ApiService.js
+        // fetch html-form readme using custom header
         const getProjectReadme = await Axios.getProjectReadme(this.username, this.project);
         this.projectReadme = getProjectReadme.data;
         this.isBusy = false;
