@@ -1,10 +1,10 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a
+      <router-link
         class="navbar-brand"
-        href="/"
-      >Bagaskara</a>
+        to="/"
+      >Bagaskara</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -22,16 +22,16 @@
       >
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a
+            <router-link
               class="nav-link"
-              href="/"
-            >Home</a>
+              to="/"
+            >Home</router-link>
           </li>
           <li class="nav-item">
-            <a
+            <router-link
               class="nav-link"
-              href="/roman/sorting"
-            >Roman Sorting</a>
+              to="/roman/sorting"
+            >Roman Sorting</router-link>
           </li>
         </ul>
       </div>
